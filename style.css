@@ -1,0 +1,97 @@
+:root {
+  --palette-primary: #e0e1dd;
+  --palette-secondary: #778da9;
+  --palette-tertiary: #415a77;
+  --palette-red: #e63946;
+  --palette-darkblue: #1b263b;
+  --palette-verydarkblue: #0d1b2a;
+
+  --fontsize-small: 12px;
+  --fontsize-normal: 16px;
+  --fontsize-big: 24px;
+
+  --sidebar-width: 180px;
+  --sidebar-items-imgwidth: 25px;
+}
+
+body {
+  font-family: "Montserrat", "Courier New";
+  background-color: var(--palette-primary);
+}
+
+/* 
+========================================
+-- HEADER/SIDEBAR (PERSISTS)
+========================================
+*/
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: var(--sidebar-width);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  box-sizing: border-box;
+  padding: 20px 14px;
+
+  background-color: var(--palette-darkblue);
+}
+
+.sidebar hr {
+  width: 100%;
+}
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: var(--fontsize-normal);
+  font-weight: 600;
+  color: white;
+  width: 100%;
+}
+
+.sidebar-title img {
+  width: 40px;
+  height: auto;
+}
+
+.sidebar-items {
+  display: flex;
+  align-items: center;
+  padding: 3px 10px;
+  box-sizing: border-box;
+
+  width: 100%;
+
+  font-size: var(--fontsize-small);
+  font-weight: 500;
+  color: white;
+
+  margin-top: 4px;
+  margin-bottom: 4px;
+
+  cursor: pointer;
+
+  transition: all 0.3s;
+}
+
+.sidebar-items:hover {
+  opacity: 0.7;
+}
+
+.sidebar-items img {
+  width: var(--sidebar-items-imgwidth);
+  margin-right: 10px;
+}
+
+.sidebar-items.selected {
+  background-color: var(--palette-secondary);
+  color: white;
+  border-radius: 7px;
+}
