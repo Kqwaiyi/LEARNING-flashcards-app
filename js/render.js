@@ -42,7 +42,7 @@ export function homePage() {
             </p>
           </div>
           <div class="homepage-decks-deckitems-progress-graybar">
-            <div class="homepage-decks-deckitems-progress-bar"></div>
+            <div class="homepage-decks-deckitems-progress-bar" style="width: ${elem.bestScore || 0}%"></div>
           </div>
         </div>
       </div>

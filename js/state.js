@@ -2,9 +2,9 @@ let isLoaded = false;
 const DATASTORE_KEY = "datastore";
 export let datastore = [
   {
-    id: "smthsmth",
-    name: "namestring",
-    bestScore: null,
+    id: "smthsmth1",
+    name: "namestring1",
+    bestScore: 10,
     cards: [
       {
         id: 1,
@@ -27,9 +27,9 @@ export let datastore = [
     ],
   },
   {
-    id: "smthsmth",
-    name: "namestring",
-    bestScore: null,
+    id: "smthsmth2",
+    name: "namestring2",
+    bestScore: 54,
     cards: [
       {
         id: 1,
@@ -52,9 +52,9 @@ export let datastore = [
     ],
   },
   {
-    id: "smthsmth",
-    name: "namestring",
-    bestScore: null,
+    id: "smthsmth3",
+    name: "namestring3",
+    bestScore: 85,
     cards: [
       {
         id: 1,
@@ -125,7 +125,7 @@ function saveData() {
 ======================================== */
 export function loadData() {
   // Called once when app loads, loading the datastore from localstorage
-  if (isLoaded) {
+  if (isLoaded || datastore.length > 0) {
     return;
   }
   isLoaded = true;

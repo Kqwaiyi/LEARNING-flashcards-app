@@ -334,7 +334,6 @@ button:hover {
   border-radius: var(--homepage-border-radius);
   background-color: var(--palette-tertiary);
   z-index: 1000;
-  width: 40%;
   height: 100%;
 }
 
