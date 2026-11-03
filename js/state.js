@@ -1,6 +1,82 @@
 let isLoaded = false;
 const DATASTORE_KEY = "datastore";
-export let datastore = [];
+export let datastore = [
+  {
+    id: "smthsmth",
+    name: "namestring",
+    bestScore: null,
+    cards: [
+      {
+        id: 1,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 2,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 3,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+    ],
+  },
+  {
+    id: "smthsmth",
+    name: "namestring",
+    bestScore: null,
+    cards: [
+      {
+        id: 1,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 2,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 3,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+    ],
+  },
+  {
+    id: "smthsmth",
+    name: "namestring",
+    bestScore: null,
+    cards: [
+      {
+        id: 1,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 2,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+      {
+        id: 3,
+        front: "smthsmth",
+        back: "smthsmth",
+        createdAt: 123,
+      },
+    ],
+  },
+];
 
 /*
 ========================================
@@ -74,4 +150,16 @@ export function getDeckWithId(id) {
     return deck.id === id;
   });
   return deckFound || null;
+}
+
+export function getTotalDecks() {
+  return datastore.length;
+}
+
+export function getTotalCards() {
+  let total = 0;
+  datastore.forEach((elem) => {
+    total += elem.cards.length;
+  });
+  return total;
 }

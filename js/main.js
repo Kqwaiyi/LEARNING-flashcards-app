@@ -1,4 +1,9 @@
 /* ========================================
+-- IMPORTS
+======================================== */
+import * as render from "./render.js";
+
+/* ========================================
 -- DEFINING CONSTANTS
 ======================================== */
 const sidebar = {
@@ -7,9 +12,9 @@ const sidebar = {
   study: document.querySelector(".js-sidebar-study"),
 };
 const sidebarPaths = {
-  home: "",
-  addDecks: "",
-  study: "",
+  home: render.homePage,
+  addDecks: render.blankPage,
+  study: render.blankPage,
 };
 let sidebarSelected = "home";
 
@@ -30,5 +35,8 @@ function sidebarClicked(clicked) {
   sidebarSelected = clicked;
   sidebar[clicked].classList.add("selected");
 
+  sidebarPaths[clicked]();
   console.log(clicked);
 }
+
+render.homePage();
