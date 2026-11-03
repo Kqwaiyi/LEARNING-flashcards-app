@@ -1,6 +1,7 @@
 let isLoaded = false;
 const DATASTORE_KEY = "datastore";
-export let datastore = [
+
+let datastore = [
   {
     id: "smthsmth1",
     name: "namestring1",

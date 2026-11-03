@@ -18,6 +18,7 @@ export function homePage() {
 
   let decksHTML = ``;
   decks.forEach((elem) => {
+    const score = Math.min(100, Math.max(0, Number(elem.bestScore) || 0));
     decksHTML += `
       <div class="homepage-decks-deckitems">
         <div class="homepage-decks-deckitems-icons">
@@ -38,11 +39,11 @@ export function homePage() {
           <div class="homepage-decks-deckitems-progress-texts">
             <p>Best Score</p>
             <p class="homepage-decks-deckitems-progress-texts-progress">
-              ${elem.bestScore || 0}%
+              ${score}%
             </p>
           </div>
           <div class="homepage-decks-deckitems-progress-graybar">
-            <div class="homepage-decks-deckitems-progress-bar" style="width: ${elem.bestScore || 0}%"></div>
+            <div class="homepage-decks-deckitems-progress-bar" style="width: ${score}%"></div>
           </div>
         </div>
       </div>
