@@ -1,83 +1,7 @@
 let isLoaded = false;
 const DATASTORE_KEY = "datastore";
 
-let datastore = [
-  {
-    id: "smthsmth1",
-    name: "namestring1",
-    bestScore: 10,
-    cards: [
-      {
-        id: 1,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 2,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 3,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-    ],
-  },
-  {
-    id: "smthsmth2",
-    name: "namestring2",
-    bestScore: 54,
-    cards: [
-      {
-        id: 1,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 2,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 3,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-    ],
-  },
-  {
-    id: "smthsmth3",
-    name: "namestring3",
-    bestScore: 85,
-    cards: [
-      {
-        id: 1,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 2,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-      {
-        id: 3,
-        front: "smthsmth",
-        back: "smthsmth",
-        createdAt: 123,
-      },
-    ],
-  },
-];
+let datastore = [];
 
 /*
 ========================================
@@ -144,6 +68,36 @@ export function loadData() {
 export function getData() {
   // Getter function for datastore. No external script touches datastore directly.
   return datastore;
+}
+
+export function createDeck(name) {
+  const trimmedName = name.trim();
+  if (trimmedName.length < 1 || trimmedName.length > 40) return null;
+
+  const nameDuplicateCheck = datastore.find(
+    (elem) => elem.name === trimmedName,
+  );
+  if (nameDuplicateCheck) return null;
+
+  let newDeck = {
+    id: crypto.randomUUID(),
+    name: trimmedName,
+    bestScore: null,
+    cards: [],
+  };
+
+  datastore.push(newDeck);
+  saveData();
+}
+
+export function deleteDeckWithId(id) {
+  const index = datastore.findIndex((deck) => deck.id === id);
+  if (index === -1) {
+    return;
+  }
+
+  datastore.splice(index, 1);
+  saveData();
 }
 
 export function getDeckWithId(id) {

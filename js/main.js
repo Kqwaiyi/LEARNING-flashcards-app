@@ -2,41 +2,54 @@
 -- IMPORTS
 ======================================== */
 import * as render from "./render.js";
+import { loadData } from "./state.js";
 
 /* ========================================
 -- DEFINING CONSTANTS
 ======================================== */
 const sidebar = {
   home: document.querySelector(".js-sidebar-home"),
-  addDecks: document.querySelector(".js-sidebar-add"),
   study: document.querySelector(".js-sidebar-study"),
+  decksPanel: document.querySelector(".sidebar-decks-panel"),
 };
 const sidebarPaths = {
   home: render.homePage,
-  addDecks: render.blankPage,
   study: render.blankPage,
 };
-let sidebarSelected = "home";
 
 /* ========================================
 -- SIDEBAR RELATED STUFFS
 ======================================== */
 sidebar.home.addEventListener("click", () => sidebarClicked("home"));
-sidebar.addDecks.addEventListener("click", () => sidebarClicked("addDecks"));
 sidebar.study.addEventListener("click", () => sidebarClicked("study"));
+
+sidebar.decksPanel.addEventListener("click", (e) => {
+  const item = e.target.closest(".sidebar-items");
+  if (!item) return;
+  sidebarClearSelected();
+  render.setSelectedDeck(item.dataset.deckId);
+  item.classList.add("selected");
+});
 
 /* ========================================
 -- HELPER FUNCTIONS
 ======================================== */
+function sidebarClearSelected() {
+  const item = document.querySelector(".sidebar .selected");
+  if (!item) return;
+  item.classList.remove("selected");
+}
+
 function sidebarClicked(clicked) {
-  if (sidebarSelected === clicked) return;
   if (!(clicked in sidebarPaths)) return;
-  sidebar[sidebarSelected].classList.remove("selected");
-  sidebarSelected = clicked;
+  sidebarClearSelected();
+  render.setSelectedDeck(null);
   sidebar[clicked].classList.add("selected");
 
   sidebarPaths[clicked]();
   console.log(clicked);
 }
 
-render.homePage();
+//render.homePage();
+//render.navBar();
+loadData();

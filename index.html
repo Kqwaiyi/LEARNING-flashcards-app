@@ -26,17 +26,27 @@
         <img src="assets/home.svg" alt="home icon" />
         <p>Home</p>
       </div>
-      <div class="sidebar-items js-sidebar-add">
-        <img src="assets/add.svg" alt="add decks icon" />
-        <p>Add Decks</p>
-      </div>
       <div class="sidebar-items js-sidebar-study">
         <img src="assets/study.svg" alt="study decks icon" />
         <p>Study</p>
       </div>
+      <p class="sidebar-items">Your Decks</p>
+      <div class="sidebar-decks-panel"></div>
     </nav>
 
-    <main class="main-screen"></main>
+    <main class="main-screen">
+      <div class="deckpage-topbar">
+        <div>
+          <p class="deckpage-topbar-textback">Back to all cards</p>
+          <h1>${Name}</h1>
+          <p>${} Cards. Best Score ${}%</p>
+        </div>
+        <button class="deckpage-topbar-button">Study ></button>
+      </div>
+      <div class="deckpage-main">
+        <div class="deckpage-main-addpanel"></div>
+      </div>
+    </main>
     <script type="module" src="js/main.js"></script>
   </body>
 </html>
