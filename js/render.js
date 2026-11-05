@@ -2,6 +2,7 @@
 -- IMPORTS
 =========================================*/
 import * as datastore from "./state.js";
+import { sidebarClearSelected } from "./main.js";
 
 /*========================================
 -- DECLARING VARIABLES
@@ -10,6 +11,18 @@ const mainScreen = document.querySelector(".main-screen");
 const DIV_navBarDecks = document.querySelector(".sidebar-decks-panel");
 
 let selectedSidebarDeck = null;
+
+/*========================================
+-- HELPER FUNCTIONS
+=========================================*/
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 /*========================================
 -- PAGES
@@ -40,14 +53,14 @@ export function homePage() {
             src="assets/decks.svg"
             class="icons-decks js-deck-icons-decks"
           />
-          <img src="assets/edit.svg" class="icons-edit js-deck-icons-edit" />
+          <img src="assets/edit.svg" class="icons-edit js-deck-icons-edit" data-deck-id="${elem.id}"/>
           <img
             src="assets/delete.svg"
             class="icons-delete js-deck-icons-delete"
             data-deck-id="${elem.id}"
           />
         </div>
-        <h1>${elem.name}</h1>
+        <h1>${escapeHtml(elem.name)}</h1>
         <p>${elem.cards.length} Cards</p>
 
         <div class="homepage-decks-deckitems-progress">
@@ -96,6 +109,7 @@ export function homePage() {
 
   // Event listeners
   const deleteButtons = document.querySelectorAll(".js-deck-icons-delete");
+  const editButtons = document.querySelectorAll(".js-deck-icons-edit");
   const newdeckInput = document.getElementById("homepage-newdeck-input");
   const createButton = document.querySelector(".js-homepage-create-button");
   const cancelButton = document.querySelector(".js-homepage-cancel-button");
@@ -103,8 +117,21 @@ export function homePage() {
   deleteButtons.forEach((delbtn) => {
     delbtn.addEventListener("click", () => {
       const deckId = delbtn.dataset.deckId;
-      console.log(deckId);
       onDelete(deckId);
+    });
+  });
+
+  editButtons.forEach((editbtn) => {
+    editbtn.addEventListener("click", () => {
+      const deckId = editbtn.dataset.deckId;
+      const sidebarItem = document.querySelector(
+        `.sidebar-items[data-deck-id="${deckId}"]`,
+      );
+      sidebarClearSelected();
+      setSelectedDeck(deckId);
+      sidebarItem.classList.add("selected");
+      console.log(sidebarItem);
+      deckPage(deckId);
     });
   });
 
@@ -128,7 +155,7 @@ export function navBar() {
     navBarHTML += `
       <div class="sidebar-items ${selectedClass}" data-deck-id="${elem.id}" >
         <img src="assets/decks.svg" alt="decks icon" />
-        <p>${elem.name}</p>
+        <p>${escapeHtml(elem.name)}</p>
       </div>
     `;
   });
@@ -150,8 +177,8 @@ export function deckPage(id) {
     deckItemsHTML += `
       <div class="deckpage-main-cardpanel-items">
         <div>
-          <p class="question-title">${elem.front}</p>
-          <p>${elem.back}</p>
+          <p class="question-title">${escapeHtml(elem.front)}</p>
+          <p>${escapeHtml(elem.back)}</p>
         </div>
         <div class="card-controls">
           <img src="assets/edit.svg" />
@@ -165,7 +192,7 @@ export function deckPage(id) {
     <div class="deckpage-topbar">
       <div>
         <p class="deckpage-topbar-textback">Back to all cards</p>
-        <h1>${deck.name}</h1>
+        <h1>${escapeHtml(deck.name)}</h1>
         <p>${deck.cards.length} Cards. Best Score: ${deck.bestScore || 0}%</p>
       </div>
       <button class="deckpage-topbar-button">Study ></button>
@@ -174,7 +201,7 @@ export function deckPage(id) {
       <form class="deckpage-main-addpanel" novalidate>
         <h1>Add a Card</h1>
         <div class="deckpage-input-group">
-          <label for="question" class="deckpage-input-label"
+          <label for="question-input" class="deckpage-input-label"
             >Front (Question)</label
           >
           <textarea required maxlength="150" id="question-input"></textarea>
@@ -185,7 +212,7 @@ export function deckPage(id) {
         </div>
 
         <div class="deckpage-input-group">
-          <label for="question" class="deckpage-input-label"
+          <label for="answer-input" class="deckpage-input-label"
             >Back (Answer)</label
           >
           <textarea required maxlength="150" id="answer-input"></textarea>

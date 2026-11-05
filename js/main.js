@@ -35,7 +35,7 @@ sidebar.decksPanel.addEventListener("click", (e) => {
 /* ========================================
 -- HELPER FUNCTIONS
 ======================================== */
-function sidebarClearSelected() {
+export function sidebarClearSelected() {
   const item = document.querySelector(".sidebar .selected");
   if (!item) return;
   item.classList.remove("selected");
