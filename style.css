@@ -1,4 +1,6 @@
 :root {
+  --general-font-family: "Montserrat", "Courier New";
+
   --palette-primary: #e0e1dd;
   --palette-secondary: #778da9;
   --palette-tertiary: #415a77;
@@ -526,6 +528,7 @@ p.sidebar-items {
   border-bottom-color: var(--deckpage-border-color);
   border-bottom-style: solid;
 
+  gap: 20px;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -550,4 +553,57 @@ p.sidebar-items {
   font-size: var(--fontsize-xnormal);
   font-weight: 500;
   margin-bottom: 7.5px;
+}
+
+.deckpage-main-cardpanel-items #edit-card-form {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+}
+
+.deckpage-main-cardpanel-items #edit-card-form label {
+  margin-bottom: 8px;
+  font-size: var(--fontsize-small);
+  font-weight: 600;
+}
+
+.deckpage-main-cardpanel-items #edit-card-form textarea {
+  border-radius: var(--deckpage-border-radius);
+  border-style: solid;
+  border-color: var(--deckpage-border-color);
+  border-width: 1px;
+
+  margin-bottom: 8px;
+
+  padding: 2px 8px;
+  box-sizing: border-box;
+  resize: none;
+  font-family: inherit;
+
+  align-content: center;
+}
+
+.deckpage-main-cardpanel-items #edit-card-form textarea:last-child {
+  margin-bottom: 0;
+}
+
+.deckpage-main-cardpanel-items .edit-card-form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.deckpage-main-cardpanel-items .edit-card-form-buttons button {
+  padding: 15px 20px;
+  border-radius: var(--deckpage-border-radius);
+  border-color: var(--deckpage-border-color);
+  border-style: solid;
+  border-width: 1px;
+}
+
+.deckpage-main-cardpanel-items .edit-card-form-buttons .edit-card-form-submit {
+  color: white;
+  font-weight: 600;
+  background-color: var(--palette-darkblue);
 }

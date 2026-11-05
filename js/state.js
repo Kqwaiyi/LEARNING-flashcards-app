@@ -122,6 +122,33 @@ export function deleteCardWithId(deckId, cardId) {
   return 200;
 }
 
+export function getCardWithId(deckId, cardId) {
+  const deck = getDeckWithId(deckId);
+  if (!deck) return null;
+
+  const card = deck.cards.find((elem) => elem.id === cardId);
+  if (!card) return null;
+
+  return card;
+}
+
+export function updateCardWithId(deckId, cardId, newQsn, newAns) {
+  const deck = getDeckWithId(deckId);
+  if (!deck) return null;
+
+  const card = deck.cards.find((elem) => elem.id === cardId);
+  const cardIndex = deck.cards.findIndex((elem) => elem.id === cardId);
+  if (!card || cardIndex === -1) return null;
+
+  let newCard = { ...card };
+  newCard.front = newQsn;
+  newCard.back = newAns;
+
+  deck.cards[cardIndex] = newCard;
+  saveData();
+  return 200;
+}
+
 export function deleteDeckWithId(id) {
   const index = datastore.findIndex((deck) => deck.id === id);
   if (index === -1) {

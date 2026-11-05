@@ -33,6 +33,7 @@ export function homePage() {
   const decks = datastore.getData();
   let decksHTML = ``;
 
+  // helper functions
   function reRender() {
     homePage();
     navBar();
@@ -130,7 +131,6 @@ export function homePage() {
       sidebarClearSelected();
       setSelectedDeck(deckId);
       sidebarItem.classList.add("selected");
-      console.log(sidebarItem);
       deckPage(deckId);
     });
   });
@@ -172,16 +172,119 @@ export function deckPage(id) {
   const deck = datastore.getDeckWithId(id);
   if (!deck) return;
 
+  let currentlyEditing = null;
   let deckItemsHTML = ``;
+
+  // changes the card panel to an edit display
+  function editCard(cardId) {
+    if (currentlyEditing === cardId) return;
+    if (currentlyEditing) {
+      _cancelEdit(currentlyEditing);
+    }
+
+    currentlyEditing = cardId;
+    const selectedNow = document.querySelector(
+      `.deckpage-main-cardpanel-items[data-card-id="${currentlyEditing}"]`,
+    );
+    selectedNow.innerHTML = `
+      <form id="edit-card-form">
+        <label>Editing</label>
+        <textarea required minlength="1" maxlength="150" class="edit-card-question"></textarea>
+        <textarea required minlength="1" maxlength="150" class="edit-card-answer"></textarea>
+      </form>
+      <div class="edit-card-form-buttons">
+        <button class="edit-card-form-cancel" data-card-id="${currentlyEditing}">Cancel</button>
+        <button
+          type="submit"
+          form="edit-card-form"
+          class="edit-card-form-submit"
+        >
+          Submit
+        </button>
+      </div>
+    `;
+    const currentCardData = datastore.getCardWithId(id, cardId);
+    const form = document.getElementById("edit-card-form");
+    const questionArea = form.querySelector(".edit-card-question");
+    const answerArea = form.querySelector(".edit-card-answer");
+    const cancelBtn = document.querySelector(".edit-card-form-cancel");
+
+    questionArea.value = currentCardData.front;
+    answerArea.value = currentCardData.back;
+
+    cancelBtn.addEventListener("click", () => {
+      _cancelEdit(cancelBtn.dataset.cardId);
+      currentlyEditing = null;
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      let isValid = true;
+      const editedQuestion = form
+        .querySelector(".edit-card-question")
+        .value.trim();
+      const editedAnswer = form.querySelector(".edit-card-answer").value.trim();
+
+      if (editedQuestion === "" || editedAnswer == "") {
+        isValid = false;
+      }
+
+      if (editedQuestion.length < 1 || editedQuestion.length > 150) {
+        isValid = false;
+      }
+      if (editedAnswer.length < 1 || editedAnswer.length > 150) {
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const resp = datastore.updateCardWithId(
+        id,
+        cardId,
+        editedQuestion,
+        editedAnswer,
+      );
+      if (resp === 200) {
+        _cancelEdit(cardId);
+        currentlyEditing = null;
+      }
+    });
+  }
+
+  function _cancelEdit(idToCancel) {
+    const selected = document.querySelector(
+      `.deckpage-main-cardpanel-items[data-card-id="${idToCancel}"]`,
+    );
+    if (!selected) return;
+
+    const data = datastore.getCardWithId(id, idToCancel);
+    if (!data) {
+      console.error("ouu shi");
+      return;
+    }
+
+    console.log(data);
+    selected.innerHTML = `
+      <div>
+        <p class="question-title">${escapeHtml(data.front)}</p>
+        <p>${escapeHtml(data.back)}</p>
+      </div>
+      <div class="card-controls">
+        <img src="assets/edit.svg" data-card-id="${idToCancel}" class="js-edit-card"/>
+        <img src="assets/delete.svg" data-card-id="${idToCancel}" class="js-delete-card"/>
+      </div>
+    `;
+  }
+
   deck.cards.forEach((elem) => {
     deckItemsHTML += `
-      <div class="deckpage-main-cardpanel-items">
+      <div class="deckpage-main-cardpanel-items" data-card-id="${elem.id}">
         <div>
           <p class="question-title">${escapeHtml(elem.front)}</p>
           <p>${escapeHtml(elem.back)}</p>
         </div>
         <div class="card-controls">
-          <img src="assets/edit.svg" />
+          <img src="assets/edit.svg" data-card-id="${elem.id}" class="js-edit-card"/>
           <img src="assets/delete.svg" data-card-id="${elem.id}" class="js-delete-card"/>
         </div>
       </div>
@@ -236,15 +339,18 @@ export function deckPage(id) {
   const answerError = document.getElementById("answer-error");
   const questionCount = document.getElementById("question-count");
   const answerCount = document.getElementById("answer-count");
-  const deleteCardButton = document.querySelectorAll(".js-delete-card");
+  const cardPanel = document.querySelector(".deckpage-main-cardpanel");
 
-  deleteCardButton.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const resp = datastore.deleteCardWithId(id, btn.dataset.cardId);
-      if (resp === 200) {
-        deckPage(id);
-      }
-    });
+  cardPanel.addEventListener("click", (e) => {
+    const editBtn = e.target.closest(".js-edit-card");
+    const deleteBtn = e.target.closest(".js-delete-card");
+
+    if (editBtn) editCard(editBtn.dataset.cardId);
+
+    if (deleteBtn) {
+      const resp = datastore.deleteCardWithId(id, deleteBtn.dataset.cardId);
+      if (resp === 200) deckPage(id);
+    }
   });
 
   questionInput.addEventListener("input", () => {
