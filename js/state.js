@@ -90,6 +90,38 @@ export function createDeck(name) {
   saveData();
 }
 
+export function createCard(id, question, answer) {
+  const deck = datastore.find((elem) => elem.id === id);
+  if (!deck) return null;
+  const trimmedQuestion = question.trim();
+  const trimmedAnswer = answer.trim();
+  if (trimmedAnswer.length < 1 || trimmedAnswer.length > 150) return null;
+  if (trimmedQuestion.length < 1 || trimmedQuestion.length > 150) return null;
+
+  let newCard = {
+    id: crypto.randomUUID(),
+    front: trimmedQuestion,
+    back: trimmedAnswer,
+    createdAt: Date.now(),
+  };
+
+  deck.cards.push(newCard);
+  saveData();
+  return newCard;
+}
+
+export function deleteCardWithId(deckId, cardId) {
+  const deck = getDeckWithId(deckId);
+  if (!deck) return null;
+
+  const index = deck.cards.findIndex((card) => card.id === cardId);
+  if (index === -1) return null;
+
+  deck.cards.splice(index, 1);
+  saveData();
+  return 200;
+}
+
 export function deleteDeckWithId(id) {
   const index = datastore.findIndex((deck) => deck.id === id);
   if (index === -1) {

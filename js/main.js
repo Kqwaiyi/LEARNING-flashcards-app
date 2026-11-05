@@ -29,6 +29,7 @@ sidebar.decksPanel.addEventListener("click", (e) => {
   sidebarClearSelected();
   render.setSelectedDeck(item.dataset.deckId);
   item.classList.add("selected");
+  render.deckPage(item.dataset.deckId);
 });
 
 /* ========================================
@@ -50,6 +51,6 @@ function sidebarClicked(clicked) {
   console.log(clicked);
 }
 
-//render.homePage();
-//render.navBar();
 loadData();
+render.homePage();
+render.navBar();

@@ -118,10 +118,7 @@ export function homePage() {
   });
 }
 
-export function blankPage() {
-  mainScreen.innerHTML = "";
-}
-
+////////////////////////////////////////////////////////////////////////////////
 export function navBar() {
   const decks = datastore.getData();
   let navBarHTML = ``;
@@ -141,4 +138,125 @@ export function navBar() {
 
 export function setSelectedDeck(id) {
   selectedSidebarDeck = id;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+export function deckPage(id) {
+  const deck = datastore.getDeckWithId(id);
+  if (!deck) return;
+
+  let deckItemsHTML = ``;
+  deck.cards.forEach((elem) => {
+    deckItemsHTML += `
+      <div class="deckpage-main-cardpanel-items">
+        <div>
+          <p class="question-title">${elem.front}</p>
+          <p>${elem.back}</p>
+        </div>
+        <div class="card-controls">
+          <img src="assets/edit.svg" />
+          <img src="assets/delete.svg" data-card-id="${elem.id}" class="js-delete-card"/>
+        </div>
+      </div>
+    `;
+  });
+
+  let deckPageHTML = `
+    <div class="deckpage-topbar">
+      <div>
+        <p class="deckpage-topbar-textback">Back to all cards</p>
+        <h1>${deck.name}</h1>
+        <p>${deck.cards.length} Cards. Best Score: ${deck.bestScore || 0}%</p>
+      </div>
+      <button class="deckpage-topbar-button">Study ></button>
+    </div>
+    <div class="deckpage-main">
+      <form class="deckpage-main-addpanel" novalidate>
+        <h1>Add a Card</h1>
+        <div class="deckpage-input-group">
+          <label for="question" class="deckpage-input-label"
+            >Front (Question)</label
+          >
+          <textarea required maxlength="150" id="question-input"></textarea>
+          <div class="deckpage-bottom-label">
+            <div class="error-message" id="question-error"></div>
+            <div class="char-count" id="question-count">0/150</div>
+          </div>
+        </div>
+
+        <div class="deckpage-input-group">
+          <label for="question" class="deckpage-input-label"
+            >Back (Answer)</label
+          >
+          <textarea required maxlength="150" id="answer-input"></textarea>
+          <div class="deckpage-bottom-label">
+            <div class="error-message" id="answer-error"></div>
+            <div class="char-count" id="answer-count">0/150</div>
+          </div>
+        </div>
+        <button type="submit" class="submit-button">Submit</button>
+      </form>
+      <div class="deckpage-main-cardpanel">${deckItemsHTML}</div>
+    </div>
+  `;
+  mainScreen.innerHTML = deckPageHTML;
+
+  // Event listeners
+  const form = document.querySelector(".deckpage-main-addpanel");
+  const questionInput = document.getElementById("question-input");
+  const answerInput = document.getElementById("answer-input");
+  const questionError = document.getElementById("question-error");
+  const answerError = document.getElementById("answer-error");
+  const questionCount = document.getElementById("question-count");
+  const answerCount = document.getElementById("answer-count");
+  const deleteCardButton = document.querySelectorAll(".js-delete-card");
+
+  deleteCardButton.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const resp = datastore.deleteCardWithId(id, btn.dataset.cardId);
+      if (resp === 200) {
+        deckPage(id);
+      }
+    });
+  });
+
+  questionInput.addEventListener("input", () => {
+    questionError.innerHTML = "";
+    questionCount.innerHTML = `${questionInput.value.length}/150`;
+  });
+
+  answerInput.addEventListener("input", () => {
+    answerError.innerHTML = "";
+    answerCount.innerHTML = `${answerInput.value.length}/150`;
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let isValid = true;
+
+    if (questionInput.value.trim() === "") {
+      isValid = false;
+      questionError.innerHTML = "Can't be empty!";
+    }
+
+    if (answerInput.value.trim() === "") {
+      isValid = false;
+      answerError.innerHTML = "Can't be empty!";
+    }
+    if (!isValid) return;
+    const resp = datastore.createCard(
+      id,
+      questionInput.value,
+      answerInput.value,
+    );
+
+    if (resp) {
+      deckPage(id);
+    }
+  });
+}
+
+////////////////////////////////////////////////////////////////////////////////
+export function blankPage() {
+  mainScreen.innerHTML = "";
 }

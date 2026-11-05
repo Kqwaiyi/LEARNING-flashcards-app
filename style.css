@@ -14,9 +14,12 @@
 
   --sidebar-width: 180px;
   --sidebar-items-imgwidth: 25px;
+  --deckpage-imgwidth: 17px;
 
   --homepage-border-radius: 10px;
   --deckpage-border-radius: 10px;
+
+  --deckpage-border-color: rgba(0, 0, 0, 0.51);
 }
 
 body {
@@ -411,23 +414,140 @@ p.sidebar-items {
 
 /* Deckpage's main div, where everything will be here */
 .deckpage-main {
-  display: grid;
-  grid-template-columns: 350px minmax(800px, 1fr);
+  display: flex;
   gap: 30px;
+  justify-content: space-between;
 
   width: 100%;
 }
 
 /* Left panel, the adding functionality */
 .deckpage-main-addpanel {
+  flex: 0 0 350px;
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
 
   padding: 20px;
   box-sizing: border-box;
 
   background-color: white;
-  min-height: 500px;
-  border-style: none;
   border-radius: var(--deckpage-border-radius);
+  border-style: solid;
+  border-color: var(--deckpage-border-color);
+  border-width: 1px;
+}
+
+.deckpage-main-addpanel h1 {
+  font-size: var(--fontsize-big);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* The input box, and all its input/label */
+.deckpage-input-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.deckpage-input-label {
+  font-size: var(--fontsize-small);
+  font-weight: 600;
+  margin-bottom: 4.5px;
+}
+
+.deckpage-input-group textarea {
+  border-radius: var(--deckpage-border-radius);
+  border-style: solid;
+  border-color: var(--deckpage-border-color);
+  border-width: 1px;
+
+  height: 100px;
+  margin-bottom: 4.5px;
+
+  padding: 8px;
+  box-sizing: border-box;
+  resize: none;
+  font-family: inherit;
+}
+
+.deckpage-bottom-label {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  font-size: var(--fontsize-small);
+}
+
+.deckpage-bottom-label .error-message {
+  color: red;
+}
+
+.deckpage-bottom-label .char-count {
+  justify-self: end;
+}
+
+.deckpage-main-addpanel .submit-button {
+  background-color: var(--palette-darkblue);
+  border-radius: var(--deckpage-border-radius);
+
+  font-weight: 600;
+  font-size: var(--fontsize-xnormal);
+  color: white;
+
+  padding: 15px 15px;
+}
+
+/* Right panel, the cards display */
+.deckpage-main-cardpanel {
+  min-width: 800px;
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+
+  align-self: flex-start;
+
+  box-sizing: border-box;
+
+  background-color: white;
+  border-style: solid;
+  border-color: var(--deckpage-border-color);
+  border-width: 1px;
+  border-radius: var(--deckpage-border-radius);
+}
+
+.deckpage-main-cardpanel-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  border-bottom-width: 1px;
+  border-bottom-color: var(--deckpage-border-color);
+  border-bottom-style: solid;
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.deckpage-main-cardpanel-items:last-child {
+  border-bottom: none;
+}
+
+.deckpage-main-cardpanel-items img {
+  cursor: pointer;
+  width: var(--deckpage-imgwidth);
+  height: auto;
+}
+
+.deckpage-main-cardpanel-items .card-controls {
+  display: flex;
+  width: 70px;
+  justify-content: space-between;
+}
+
+.deckpage-main-cardpanel-items .question-title {
+  font-size: var(--fontsize-xnormal);
+  font-weight: 500;
+  margin-bottom: 7.5px;
 }
