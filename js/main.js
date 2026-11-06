@@ -41,7 +41,7 @@ export function sidebarClearSelected() {
   item.classList.remove("selected");
 }
 
-function sidebarClicked(clicked) {
+export function sidebarClicked(clicked) {
   if (!(clicked in sidebarPaths)) return;
   sidebarClearSelected();
   render.setSelectedDeck(null);

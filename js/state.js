@@ -149,6 +149,34 @@ export function updateCardWithId(deckId, cardId, newQsn, newAns) {
   return 200;
 }
 
+export function importCardsToDeck(id, content) {
+  if (!Array.isArray(content) || content.length === 0) return null;
+
+  const deck = getDeckWithId(id);
+  if (!deck) return null;
+
+  const normalizedResults = content
+    .map((elem) => {
+      return {
+        id: crypto.randomUUID(),
+        front: decodeURIComponent(elem.question).trim(),
+        back: decodeURIComponent(elem.correct_answer).trim(),
+        createdAt: Date.now(),
+      };
+    })
+    .filter((card) => {
+      return (
+        card.front.length >= 1 &&
+        card.front.length <= 150 &&
+        card.back.length >= 1 &&
+        card.back.length <= 150
+      );
+    });
+  deck.cards.push(...normalizedResults);
+  saveData();
+  return normalizedResults.length;
+}
+
 export function deleteDeckWithId(id) {
   const index = datastore.findIndex((deck) => deck.id === id);
   if (index === -1) {

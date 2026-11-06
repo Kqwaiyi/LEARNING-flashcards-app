@@ -2,7 +2,8 @@
 -- IMPORTS
 =========================================*/
 import * as datastore from "./state.js";
-import { sidebarClearSelected } from "./main.js";
+import { sidebarClearSelected, sidebarClicked } from "./main.js";
+import { getQuestions } from "./api.js";
 
 /*========================================
 -- DECLARING VARIABLES
@@ -298,7 +299,10 @@ export function deckPage(id) {
         <h1>${escapeHtml(deck.name)}</h1>
         <p>${deck.cards.length} Cards. Best Score: ${deck.bestScore || 0}%</p>
       </div>
-      <button class="deckpage-topbar-button">Study ></button>
+      <div class="deckpage-topbar-button-div">
+        <button class="deckpage-topbar-button" id="import-button">Import</button>
+        <button class="deckpage-topbar-button">Study</button>
+      </div>
     </div>
     <div class="deckpage-main">
       <form class="deckpage-main-addpanel" novalidate>
@@ -340,6 +344,32 @@ export function deckPage(id) {
   const questionCount = document.getElementById("question-count");
   const answerCount = document.getElementById("answer-count");
   const cardPanel = document.querySelector(".deckpage-main-cardpanel");
+  const importButton = document.getElementById("import-button");
+  const backButton = document.querySelector(".deckpage-topbar-textback");
+
+  backButton.addEventListener("click", () => {
+    sidebarClicked("home");
+  });
+
+  importButton.addEventListener("click", async () => {
+    importButton.disabled = true;
+    importButton.innerHTML = "Loading...";
+
+    const resp = await getQuestions(5);
+
+    if (resp.error) {
+      console.error(resp.error);
+      importButton.disabled = false;
+      importButton.innerHTML = "Import";
+      return;
+    }
+
+    const count = datastore.importCardsToDeck(id, resp.questions);
+
+    if (importButton.isConnected) {
+      deckPage(id);
+    }
+  });
 
   cardPanel.addEventListener("click", (e) => {
     const editBtn = e.target.closest(".js-edit-card");

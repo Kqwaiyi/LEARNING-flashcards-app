@@ -400,6 +400,10 @@ p.sidebar-items {
   text-decoration: underline;
 }
 
+.deckpage-topbar-button-div {
+  display: flex;
+  gap: 13px;
+}
 .deckpage-topbar-button {
   background-color: var(--palette-darkblue);
 
@@ -553,6 +557,7 @@ p.sidebar-items {
   font-size: var(--fontsize-xnormal);
   font-weight: 500;
   margin-bottom: 7.5px;
+  max-width: 600px;
 }
 
 .deckpage-main-cardpanel-items #edit-card-form {
