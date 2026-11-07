@@ -297,10 +297,9 @@ export function deckPage(id) {
   let deckPageHTML = `
     <div class="deckpage-topbar">
       <div>
-        <p>${deck.cards.length} Cards. Best Score: ${Math.round(deck.bestScore || 0)}%</p>
+        <p class="deckpage-topbar-textback">Back to all cards</p>
         <h1>${escapeHtml(deck.name)}</h1>
-        <p>${deck.cards.length} Cards. Best Score: ${deck.bestScore || 0}%</p>
-      </div>
+        <p>${deck.cards.length} Cards. Best Score: ${Math.round(deck.bestScore || 0)}%</p>      </div>
       <div class="deckpage-topbar-button-div">
         <button class="deckpage-topbar-button" id="import-button">Import</button>
         <button
