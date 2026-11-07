@@ -24,8 +24,6 @@ export async function getQuestions(amt) {
     console.error(err);
     return { error: "failed" };
   } finally {
-    setTimeout(() => {
-      requestLock = false;
-    }, 5000);
+    requestLock = false;
   }
 }

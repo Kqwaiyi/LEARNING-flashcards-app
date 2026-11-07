@@ -149,6 +149,17 @@ export function updateCardWithId(deckId, cardId, newQsn, newAns) {
   return 200;
 }
 
+export function updateDeckBestScore(id, bestScore) {
+  if (Number(bestScore) < 0 || Number(bestScore) > 100) return;
+  const deck = getDeckWithId(id);
+  if (!deck) return;
+
+  if (deck.bestScore >= bestScore) return;
+
+  deck.bestScore = bestScore;
+  saveData();
+}
+
 export function importCardsToDeck(id, content) {
   if (!Array.isArray(content) || content.length === 0) return null;
 

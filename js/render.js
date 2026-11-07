@@ -47,7 +47,9 @@ export function homePage() {
 
   // Building the decks
   decks.forEach((elem) => {
-    const score = Math.min(100, Math.max(0, Number(elem.bestScore) || 0));
+    const score = Math.round(
+      Math.min(100, Math.max(0, Number(elem.bestScore) || 0)),
+    );
     decksHTML += `
       <div class="homepage-decks-deckitems">
         <div class="homepage-decks-deckitems-icons">
@@ -295,13 +297,16 @@ export function deckPage(id) {
   let deckPageHTML = `
     <div class="deckpage-topbar">
       <div>
-        <p class="deckpage-topbar-textback">Back to all cards</p>
+        <p>${deck.cards.length} Cards. Best Score: ${Math.round(deck.bestScore || 0)}%</p>
         <h1>${escapeHtml(deck.name)}</h1>
         <p>${deck.cards.length} Cards. Best Score: ${deck.bestScore || 0}%</p>
       </div>
       <div class="deckpage-topbar-button-div">
         <button class="deckpage-topbar-button" id="import-button">Import</button>
-        <button class="deckpage-topbar-button">Study</button>
+        <button
+          class="deckpage-topbar-button js-deckpage-study-button"
+          ${deck.cards.length === 0 ? "disabled" : ""}
+        >Study ${deck.cards.length === 0 ? "(disabled)" : ""}</button>
       </div>
     </div>
     <div class="deckpage-main">
@@ -345,7 +350,12 @@ export function deckPage(id) {
   const answerCount = document.getElementById("answer-count");
   const cardPanel = document.querySelector(".deckpage-main-cardpanel");
   const importButton = document.getElementById("import-button");
+  const studyButton = document.querySelector(".js-deckpage-study-button");
   const backButton = document.querySelector(".deckpage-topbar-textback");
+
+  studyButton.addEventListener("click", () => {
+    studyPage(id);
+  });
 
   backButton.addEventListener("click", () => {
     sidebarClicked("home");
@@ -422,4 +432,119 @@ export function deckPage(id) {
 ////////////////////////////////////////////////////////////////////////////////
 export function blankPage() {
   mainScreen.innerHTML = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+export function studyPage(id) {
+  const deck = datastore.getDeckWithId(id);
+  if (!deck) return;
+  const cards = deck.cards;
+  if (cards.length === 0) {
+    return;
+  }
+
+  mainScreen.innerHTML = `<div class="studypage-main"></div>`;
+  const studyMain = mainScreen.querySelector(".studypage-main");
+
+  let cardOrder = shuffle([...Array(cards.length).keys()]);
+  let countGotIt = 0;
+  let countMissed = 0;
+
+  // Helper functions
+  function endCard() {
+    const newScore = Math.round((countGotIt / cards.length) * 100);
+    datastore.updateDeckBestScore(id, newScore);
+
+    const mainHTML = `
+      <div class="studypage-topbar">
+        <div class="back-text js-studypage-back-text">Back to ${escapeHtml(deck.name)}</div>
+        <div class="stats">
+          <p class="gotit-text">Got It: ${countGotIt}</p>
+          <p class="missed-text">Missed: ${countMissed}</p>
+        </div>
+      </div>
+      <div class="studypage-maincard">
+        <p class="studypage-type-text">FINISHED</p>
+        <h1 class="studypage-main-text">Score: ${countGotIt}/${cards.length} Correct</h1>
+        <p class="studypage-hint-text">finished!</p>
+      </div>
+    `;
+    studyMain.innerHTML = mainHTML;
+  }
+
+  function nextCard() {
+    if (cardOrder.length === 0) {
+      endCard();
+      return;
+    }
+    const curIndexSelected = cardOrder.pop();
+    const curSelected = cards[curIndexSelected];
+    const percentageDone =
+      ((cards.length - cardOrder.length) / cards.length) * 100;
+
+    const mainHTML = `
+      <div class="studypage-topbar">
+        <div class="back-text js-studypage-back-text">Back to ${escapeHtml(deck.name)}</div>
+        <div class="stats">
+          <p class="gotit-text">Got It: ${countGotIt}</p>
+          <p class="missed-text">Missed: ${countMissed}</p>
+        </div>
+      </div>
+      <div class="studypage-progressbar">
+        <div class="progressbar-texts">
+          <p class="progressbar-title">${escapeHtml(deck.name)}</p>
+          <p class="progressbar-cardcount">Card ${cards.length - cardOrder.length} out of ${cards.length}</p>
+        </div>
+        <div class="progressbar-bar">
+          <div class="progressbar-fill" style="width: ${percentageDone}%"></div>
+        </div>
+      </div>
+      <div class="studypage-maincard">
+        <p class="studypage-type-text">QUESTION</p>
+        <h1 class="studypage-main-text">${escapeHtml(curSelected.front)}</h1>
+        <p class="studypage-hint-text">click the card to flip</p>
+      </div>
+      <div class="studypage-controls">
+        <button id="studypage-missed">Missed</button>
+        <button id="studypage-shuffle">Shuffle</button>
+        <button id="studypage-gotit">Got It</button>
+      </div>
+    `;
+    studyMain.innerHTML = mainHTML;
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // Event Listeners
+  studyMain.addEventListener("click", (e) => {
+    const backButton = e.target.closest(".js-studypage-back-text");
+    if (backButton) {
+      deckPage(id);
+    }
+
+    const shuffleButton = e.target.closest("#studypage-shuffle");
+    if (shuffleButton) {
+      shuffle(cardOrder);
+    }
+
+    const missedButton = e.target.closest("#studypage-missed");
+    if (missedButton) {
+      countMissed += 1;
+      nextCard();
+    }
+
+    const gotitButton = e.target.closest("#studypage-gotit");
+    if (gotitButton) {
+      countGotIt += 1;
+      nextCard();
+    }
+  });
+
+  nextCard();
 }

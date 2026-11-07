@@ -35,6 +35,12 @@ sidebar.decksPanel.addEventListener("click", (e) => {
 /* ========================================
 -- HELPER FUNCTIONS
 ======================================== */
+function mainStart() {
+  loadData();
+  render.homePage();
+  render.navBar();
+}
+
 export function sidebarClearSelected() {
   const item = document.querySelector(".sidebar .selected");
   if (!item) return;
@@ -51,6 +57,4 @@ export function sidebarClicked(clicked) {
   console.log(clicked);
 }
 
-loadData();
-render.homePage();
-render.navBar();
+mainStart();
