@@ -448,9 +448,12 @@ export function studyPage(id) {
   let cardOrder = shuffle([...Array(cards.length).keys()]);
   let countGotIt = 0;
   let countMissed = 0;
+  let currentCard = null;
+  let flipped = false;
 
   // Helper functions
   function endCard() {
+    currentCard = null;
     const newScore = Math.round((countGotIt / cards.length) * 100);
     datastore.updateDeckBestScore(id, newScore);
 
@@ -478,6 +481,8 @@ export function studyPage(id) {
     }
     const curIndexSelected = cardOrder.pop();
     const curSelected = cards[curIndexSelected];
+    currentCard = curSelected;
+    flipped = false;
     const percentageDone =
       ((cards.length - cardOrder.length) / cards.length) * 100;
 
@@ -542,6 +547,17 @@ export function studyPage(id) {
     if (gotitButton) {
       countGotIt += 1;
       nextCard();
+    }
+
+    const mainCard = e.target.closest(".studypage-maincard");
+    if (mainCard && currentCard) {
+      flipped = !flipped;
+      mainCard.querySelector(".studypage-type-text").textContent = flipped
+        ? "ANSWER"
+        : "QUESTION";
+      mainCard.querySelector(".studypage-main-text").textContent = flipped
+        ? currentCard.back
+        : currentCard.front;
     }
   });
 

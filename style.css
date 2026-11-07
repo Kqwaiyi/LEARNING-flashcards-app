@@ -703,6 +703,9 @@ p.sidebar-items {
 
   border-radius: var(--studypage-border-radius);
   margin-bottom: 40px;
+
+  cursor: pointer;
+  user-select: none;
 }
 
 .studypage-maincard .studypage-type-text {
